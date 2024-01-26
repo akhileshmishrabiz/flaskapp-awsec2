@@ -1,4 +1,4 @@
-# providers.tf
+
 terraform {
   required_version = "1.5.1"
   required_providers {
@@ -10,15 +10,15 @@ terraform {
 }
 
 provider "aws" {
-  region     = var.region
+  region     = "ap-south-1"
 }
 
 # Using remote backend
 terraform {
   backend "s3" {
-    bucket = var.tfstate_bucket
+    bucket = "366140438193-terraform-state"
     key    = "tfstate"
-    region = var.region
+    region = "ap-south-1"
   }
 }
 
