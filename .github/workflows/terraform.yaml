@@ -1,9 +1,6 @@
 name: Terraform Deploy
 
 on:
-    push:
-      paths:
-          infra/
     # It will enable running workflow manually      
     workflow_dispatch:
 
