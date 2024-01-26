@@ -1,9 +1,6 @@
-name: Build and Push Docker Image to ECR
+name: Deploy app
 
 on:
-  create:
-    tags:
-      - 'v*' # Trigger on tags that start with 'v'
   workflow_dispatch:
 
 env:
