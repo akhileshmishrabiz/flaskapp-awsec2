@@ -62,10 +62,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            docker image ls
-            echo "removing old stuff"
-            docker rm -f $(docker ps -aq)
-            docker rmi -f $(docker images -q)
+            # docker image ls
+            # echo "removing old stuff"
+            # docker rm -f $(docker ps -aq)
+            # docker rmi -f $(docker images -q)
             echo "running container"
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:$GITHUB_SHA
