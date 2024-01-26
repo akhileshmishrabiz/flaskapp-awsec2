@@ -29,9 +29,6 @@ jobs:
         run: |
           echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${{ env.AWS_EC2 }}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"
           echo $GITHUB_SHA
-          # copy docker cleanup script to ec2
-          # echo ${{ secrets.SSH_PRIVATE_KEY }} > ssh-key.pem
-          # scp -i ssh-key.pem docker-cleanup.sh ec2-user@${{ env.EC2_PUBLIC_IP }}:/home/ec2-user
                   
       # - name: Doccker cleanup script copy and cleanup
       #   uses: Hermanverschooten/ssh-copy-command-action@v1
