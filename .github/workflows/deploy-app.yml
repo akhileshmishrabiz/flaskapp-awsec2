@@ -32,7 +32,7 @@ jobs:
       - name: Doccker cleanup script copy and cleanup
         uses: Hermanverschooten/ssh-copy-command-action@v1
         with:
-          ssh_private_key: ${{ env.EC2_PUBLIC_IP }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           remote_host: ${{ env.EC2_PUBLIC_IP }}
           remote_user: ec2-user
           source: docker-cleanup.sh
