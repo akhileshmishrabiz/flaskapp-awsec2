@@ -8,7 +8,7 @@ on:
 
 env:
   AWS_REGION: "ap-south-1"
-  AWS_EC2: "docker-ec2-instance"
+  AWS_EC2: "docker-demo"
   ECR_REPO: "docker-flask"
   GIT_SHA: $GITHUB_SHA
 
@@ -97,6 +97,6 @@ jobs:
             ./cleanup.sh
             echo "running container"
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-            docker run -td -p 80:5000 --name flask-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:SHA
+            docker run -td -p 80:5000 --name flask-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:$SHA
 
     
