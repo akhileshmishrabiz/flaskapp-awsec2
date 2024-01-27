@@ -28,7 +28,7 @@ jobs:
         id: set-pubip-env
         run: |
           echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${{ env.AWS_EC2 }}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"
-          echo " SHA=$GITHUB_SHA >> "$GITHUB_ENV"
+          echo " SHA=$GITHUB_SHA" >> "$GITHUB_ENV"
                   
       # - name: Doccker cleanup script copy and cleanup
       #   uses: Hermanverschooten/ssh-copy-command-action@v1
