@@ -7,7 +7,7 @@ env:
   AWS_REGION: "ap-south-1"
   AWS_EC2: "docker-demo"
   ECR_REPO: "docker-flask"
-  SHA: ${{ github.sha }}
+  SHA_WORKFLOW: ${{ github.sha }}
 
 jobs:
   deploy:
@@ -37,5 +37,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "SHA -> $SHA"
             echo "SHA from environment -> ${{ env.SHA }}"
+            echo "SHA from workflow environment -> ${{ env.SHA_WORKFLOW }}"
