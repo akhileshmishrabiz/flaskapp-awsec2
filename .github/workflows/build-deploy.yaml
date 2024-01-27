@@ -1,9 +1,12 @@
 name: Build and Push Docker Image to ECR
 
 on:
-  create:
-    tags:
-      - 'v*' # Trigger on tags that start with 'v'
+  push:
+    branches:
+      - main
+  # create:
+  #   tags:
+  #     - 'v*' # Trigger on tags that start with 'v'
   workflow_dispatch:
 
 env:
