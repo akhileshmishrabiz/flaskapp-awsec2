@@ -35,30 +35,6 @@ jobs:
         run: |
           docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ env.ECR_REPO }}:$GITHUB_SHA .
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ env.ECR_REPO }}:$GITHUB_SHA
-
-      # - name: get public ip
-      #   id: set-pubip-env
-      #   run: |
-      #     echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${{ env.AWS_EC2 }}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"          
-
-
-      # - name: executing remote ssh commands using ssh key
-      #   uses: appleboy/ssh-action@v1.0.3
-      #   with:
-      #     host: ${{ env.EC2_PUBLIC_IP }}
-      #     username: ec2-user
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     port: 22
-      #     script: |
-      #       docker image ls
-      #       echo "removing old stuff"
-      #       chmod 777 docker-cleanup.sh
-      #       ./docker-cleanup.sh
-      #       echo "running container"
-      #       aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-      #       sleep 25
-      #       docker run -td -p 80:5000 --name flask-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:$GITHUB_SHA
-
     
       
 
@@ -80,13 +56,14 @@ jobs:
       - name: get public ip
         id: set-pubip-env
         run: |
-          echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${{ env.AWS_EC2 }}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"          
+          echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${{ env.AWS_EC2 }}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"  
+          echo " sha : $GITHUB_SHA"
 
 
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v1.0.3
         env:
-          SHA: ${{ github.sha }}
+          SHA: $GITHUB_SHA
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
           username: ec2-user
@@ -94,7 +71,7 @@ jobs:
           port: 22
           env: SHA
           script: |
-            ./cleanup.sh
+            echo $SHA
             echo "running container"
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
             docker run -td -p 80:5000 --name flask-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:$SHA
