@@ -7,7 +7,7 @@ env:
   AWS_REGION: "ap-south-1"
   AWS_EC2: "docker-demo"
   ECR_REPO: "docker-flask"
-  SHA: $GITHUB_SHA
+  SHA: ${{ github.sha }}
 
 jobs:
   deploy:
@@ -24,43 +24,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION  }} 
           
-      - name: get public ip
-        id: set-pubip-env
+      - name: Get Public IP and SHA
         run: |
-          echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${{ env.AWS_EC2 }}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"
-          echo " SHA=$GITHUB_SHA" >> "$GITHUB_ENV"
-
-      - name: executing remote ssh commands using ssh key
+          echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=${{ env.AWS_EC2 }}' --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"
+          echo "SHA=${{ github.sha }}" >> "$GITHUB_ENV"
+          
+      - name: Execute remote SSH commands using SSH key
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ steps.set-pubip-env.outputs.EC2_PUBLIC_IP }}
+          host: ${{ env.EC2_PUBLIC_IP }}
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo "SHA -> ${{ env.SHA }}"
-
-          
-      # - name: executing remote ssh commands using ssh key
-      #   uses: appleboy/ssh-action@v1.0.3
-      #   env: 
-      #     SHA: ${{ env.SHA }}
-      #   with:
-      #     host: ${{ env.EC2_PUBLIC_IP }}
-      #     username: ec2-user
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     ENV: SHA 
-      #     port: 22
-      #     script: |
-      #       echo ${{ env.SHA }}
-      #       echo " sha1 -> $SHA"
-          
-      #       echo "from workflow -> ${{ env.SHA }}"
-      #       # echo "running container"
-      #       # aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-      #       # docker run -td -p 80:5000 --name flask-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:$GITHUB_SHA
-
-
-
-
-    
+            echo "SHA -> $SHA"
+            echo "SHA from environment -> ${{ env.SHA }}"
