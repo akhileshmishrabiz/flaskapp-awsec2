@@ -28,7 +28,7 @@ jobs:
         id: set-pubip-env
         run: |
           echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${{ env.AWS_EC2 }}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"
-          echo $GITHUB_SHA
+          echo " SHA=$GITHUB_SHA >> "$GITHUB_ENV"
                   
       # - name: Doccker cleanup script copy and cleanup
       #   uses: Hermanverschooten/ssh-copy-command-action@v1
@@ -46,19 +46,18 @@ jobs:
 
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          SHA1: $GITHUB_SHA
-          SHA2: ${{ env.SHA }}
+        env: 
+          SHA: ${{ env.SHA }}
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ENV: SHA1, SHA2
+          ENV: SHA 
           port: 22
           script: |
-            echo ${{ env.SHA1 }}
-            echo " sha1 -> $SHA1"
-            echo "sha2 -> $SHA2"
+            echo ${{ env.SHA }}
+            echo " sha1 -> $SHA"
+          
             echo "from workflow -> ${{ env.SHA }}"
             # echo "running container"
             # aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
