@@ -68,9 +68,14 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            echo ${{ env.GIT_SHA }}
+            echo "Cleaning up the VM"
+            docker rm -f $(docker ps -aq)
+            docker rmi -f $(docker images -q)
             echo "running container"
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
             docker run -td -p 80:5000 --name flask-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${{ env.GIT_SHA }}
+            echo "status check with current SHA -> ${{ env.GIT_SHA }}"
+            docker image ls
+            docker ps -a
 
     
