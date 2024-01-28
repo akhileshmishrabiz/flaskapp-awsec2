@@ -18,4 +18,4 @@ EXPOSE 5000
 
 # Define the default command to run when the container starts
 # This command starts the Python application by executing the app.py script
-CMD ["python", "Src/app.py"]
+CMD ["python", "app.py"]
