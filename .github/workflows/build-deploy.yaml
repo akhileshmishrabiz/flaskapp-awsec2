@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-  # create:
-  #   tags:
-  #     - 'v*' # Trigger on tags that start with 'v'
-  workflow_dispatch:
 
 env:
   AWS_REGION: "ap-south-1"
@@ -32,13 +28,14 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region ap-south-1  | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
+          # Retrieves the ECR login password and logs in to ECR
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ env.ECR_REPO }}:$GITHUB_SHA .
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/${{ env.ECR_REPO }}:$GITHUB_SHA
-    
+          # Builds the Docker image with the appropriate tag and pushes it to ECR
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${{ env.GIT_SHA }} .
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${{ env.GIT_SHA }}
       
 
   deploy:
@@ -46,9 +43,9 @@ jobs:
     needs: [build]
 
     steps: 
-
       - name: Checkout Repository
         uses: actions/checkout@v2
+      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -56,14 +53,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION  }} 
           
-      - name: get public ip
-        id: set-pubip-env
+      - name: Get Public IP and SHA
         run: |
+          # Retrieves the EC2 instance's public IP and sets the SHA
           echo "EC2_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${{ env.AWS_EC2 }}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)" >> "$GITHUB_ENV"  
-          echo " sha : $GITHUB_SHA"
+          echo "SHA: $GITHUB_SHA" # Output SHA for debugging and verification
 
-
-      - name: executing remote ssh commands using ssh key
+      - name: Execute Remote SSH Commands using SSH Key
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
@@ -71,14 +67,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
+            # Cleans up existing containers and images
             echo "Cleaning up the VM"
             docker rm -f $(docker ps -aq)
             docker rmi -f $(docker images -q)
-            echo "running container"
+            
+            # Logs in to ECR and runs the Docker container
+            echo "Running container"
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
             docker run -td -p 80:5000 --name flask-app ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}:${{ env.GIT_SHA }}
-            echo "status check with current SHA -> ${{ env.GIT_SHA }}"
-            docker image ls
-            docker ps -a
-
-    
+            
