@@ -3,7 +3,7 @@ name: Build and Push Docker Image to ECR
 on:
   push:
     paths:
-      - 'src/*'  # Trigger only when Python files change inside the src folder
+      - 'Src/*'  # Trigger only when Python files change inside the src folder
     branches:
       - main
   workflow_dispatch:
