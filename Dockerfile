@@ -5,17 +5,17 @@ FROM python:3
 WORKDIR /app
 
 # Copy the requirements.txt file from the src directory of the host to the /app directory inside the container
-COPY src/requirements.txt /app
+COPY Src/requirements.txt /app
 
 # Install the Python dependencies listed in the requirements.txt file using pip
 RUN pip install -r requirements.txt
 
 # Copy all files from the src directory of the host to the /app directory inside the container
-COPY src/* /app
+COPY Src/* /app
 
 # Expose port 5000 to allow external connections to the application
 EXPOSE 5000
 
 # Define the default command to run when the container starts
 # This command starts the Python application by executing the app.py script
-CMD ["python", "app.py"]
+CMD ["python", "Src/app.py"]
