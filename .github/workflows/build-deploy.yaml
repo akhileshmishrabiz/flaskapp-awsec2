@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'Src/*'  # Trigger only when Python files change inside the src folder
+      - 'Dockerfile' 
     branches:
       - main
   workflow_dispatch:
