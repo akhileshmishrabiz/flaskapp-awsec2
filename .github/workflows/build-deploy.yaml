@@ -11,7 +11,7 @@ on:
 
 env:
   AWS_REGION: "ap-south-1"
-  AWS_EC2: "docker-demo"
+  AWS_EC2: "docker-ec2-instance"
   ECR_REPO: "docker-flask"
   GIT_SHA: ${{ github.sha }}
 
