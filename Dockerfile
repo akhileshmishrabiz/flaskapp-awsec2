@@ -13,7 +13,7 @@ RUN pip install -r requirements.txt
 # Copy all files from the src directory of the host to the /app directory inside the container
 COPY Src/* /app
 
-# Expose port 5000 to allow external connections to the application
+# Expose port 5000 to allow external connections to the docker application
 EXPOSE 5000
 
 # Define the default command to run when the container starts
