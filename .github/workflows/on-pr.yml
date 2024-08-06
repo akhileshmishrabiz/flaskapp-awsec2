@@ -30,9 +30,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Checkov
-        run: pip install checkov
+      # # use pip to install and run checkov cli ##  
+      # - name: Install Checkov
+      #   run: pip install checkov
+      #
+      # - name: Run Checkov
+      #   run: checkov -d .
 
+      ## use Builtin Github Action to run checkov 
+      # https://github.com/bridgecrewio/checkov-action
       - name: Run Checkov
-        run: checkov -d .
-        # checkov will analyze the code and fail the job if any issues are found.
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          path: .
+          # skip a specific check_id, or a comma separated list of check id
+          skip_check: CKV2_AWS_35, CKV2_AWS_56

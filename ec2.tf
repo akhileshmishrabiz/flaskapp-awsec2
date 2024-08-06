@@ -7,7 +7,7 @@ resource "aws_instance" "private" {
   availability_zone      = "${var.region}a"
   vpc_security_group_ids = [aws_security_group.docker_on_ec2.id, ]
   key_name               = var.ssh_key
-  
+
   # User data script to configure docker 
   user_data = <<-EOF
               #!/bin/bash
@@ -20,8 +20,8 @@ resource "aws_instance" "private" {
               EOF
 
   tags = {
-     "Name" = "docker-ec2-instance" 
-     }
+    "Name" = "docker-ec2-instance"
+  }
 
 }
 
