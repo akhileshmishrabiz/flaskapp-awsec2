@@ -1,0 +1,38 @@
+name: Terraform Check and Checkov Scan
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  terraform-format:
+    name: Check Terraform Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.1  # Replace with your Terraform version
+
+      - name: Validate Terraform formatting
+        run: terraform fmt -check -recursive
+        # terraform fmt --check will fail the job if any files need formatting.
+
+  checkov-scan:
+    name: Run Checkov Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Checkov
+        run: pip install checkov
+
+      - name: Run Checkov
+        run: checkov -d .
+        # checkov will analyze the code and fail the job if any issues are found.

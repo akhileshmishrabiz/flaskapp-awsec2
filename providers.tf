@@ -16,8 +16,8 @@ provider "aws" {
 # Using remote backend
 terraform {
   backend "s3" {
-    bucket = "366140438193-terraform-state"
-    key    = "tfstate"
+    bucket = "my-backend-devops101-terraform"
+    key    = "flaskappawsec2/tfstate"
     region = "ap-south-1"
   }
 }
