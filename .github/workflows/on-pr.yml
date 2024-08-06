@@ -43,6 +43,8 @@ jobs:
         uses: bridgecrewio/checkov-action@v12
         with:
           path: .
+          # run only a specific check_id
+          # check: CKV_AWS_1
           # skip a specific check_id, or a comma separated list of check id
           skip_check: CKV2_AWS_35
           quiet: true
@@ -68,6 +70,19 @@ jobs:
           output-file: README.md
           output-method: inject
           git-push: "true"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit files
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git commit -m "Terraform docs update" -a
+
+      - name: Push changes
+        uses: ad-m/github-push-action
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
+          branch: ${{ github.ref }}
 
 
           
