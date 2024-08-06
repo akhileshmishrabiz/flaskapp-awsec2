@@ -44,22 +44,30 @@ jobs:
         with:
           path: .
           # skip a specific check_id, or a comma separated list of check id
-          skip_check: CKV2_AWS_35, CKV2_AWS_56
+          skip_check: CKV2_AWS_35
+          quiet: true
 
   terraform-docs:
     name: Generate Terraform Documentation
     runs-on: ubuntu-latest
-    permissions:
-        contents: 'read'
-        id-token: 'write'
+    # permissions:
+    #     contents: 'read'
+    #     id-token: 'write'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+        ref: ${{ github.event.pull_request.head.ref }}
+
 
       - name: Render terraform docs inside the README.md and push changes back to PR branch
+        # https://github.com/terraform-docs/gh-actions
         uses: terraform-docs/gh-actions@v1.2.0
         with:
           working-dir: .
           output-file: README.md
           output-method: inject
           git-push: "true"
+
+
+          
