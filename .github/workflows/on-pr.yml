@@ -70,17 +70,17 @@ jobs:
           output-method: inject
           git-push: "false"
 
-      # - name: Commit files
-      #   run: |
-      #     git config --local user.email "akhilesh.mishra@livingdevops.com"
-      #     git config --local user.name "akhilesh"
-      #     git commit -m "Terraform docs update" -a
+      - name: Commit files
+        run: |
+          git config --local user.email "akhilesh.mishra@livingdevops.com"
+          git config --local user.name "akhilesh"
+          git commit -m "Terraform docs update" -a
 
-      # - name: Push changes
-      #   uses: ad-m/github-push-action
-      #     with:
-      #       github_token: ${{ secrets.GH_ACTIONS_PAT }}
-      #       branch: ${{ github.ref }}
+      - name: Push changes
+        uses: ad-m/github-push-action
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
+          branch: ${{ github.ref }}
 
 
           
