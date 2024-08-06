@@ -77,7 +77,7 @@ jobs:
           git commit -m "Terraform docs update" -a
 
       - name: Push changes
-        uses: ad-m/github-push-action
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GH_ACTIONS_PAT }}
           branch: ${{ github.ref }}
