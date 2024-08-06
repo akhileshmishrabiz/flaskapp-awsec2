@@ -1,0 +1,39 @@
+formatter: toml # this is required
+
+version: ""
+
+header-from: main.tf
+footer-from: "variables.tf"
+
+
+content: ""
+
+output:
+  file: README.md # output-file
+  mode: replace
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->    
+
+output-values:
+  enabled: false
+  from: ""
+
+sort:
+  enabled: true
+  by: name
+
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: false
+  escape: true
+  hide-empty: true
+  html: true
+  indent: 4
+  lockfile: true
+  required: true
+  sensitive: true
+  type: true
