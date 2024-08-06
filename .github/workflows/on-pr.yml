@@ -73,15 +73,15 @@ jobs:
 
       - name: Commit files
         run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "akhilesh.mishra@livingdevops.com"
+          git config --local user.name "akhilesh"
           git commit -m "Terraform docs update" -a
 
       - name: Push changes
         uses: ad-m/github-push-action
-        with:
-          github_token: ${{ secrets.GH_ACTIONS_PAT }}
-          branch: ${{ github.ref }}
+          with:
+            github_token: ${{ secrets.GH_ACTIONS_PAT }}
+            branch: ${{ github.ref }}
 
 
           
