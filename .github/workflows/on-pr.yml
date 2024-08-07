@@ -72,8 +72,8 @@ jobs:
 
       - name: Commit files
         run: |
-          git config --local user.email "akhilesh.mishra@livingdevops.com"
-          git config --local user.name "akhilesh"
+          git config --local user.email "akhileshmishrabiz@gmail.com"
+          git config --local user.name "akhileshmishrabiz"
           git commit -m "Terraform docs update" -a
 
       - name: Push changes
