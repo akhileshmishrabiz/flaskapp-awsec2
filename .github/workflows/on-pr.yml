@@ -51,9 +51,9 @@ jobs:
   terraform-docs:
     name: Generate Terraform Documentation
     runs-on: ubuntu-latest
-    # permissions:
-    #     contents: 'read'
-    #     id-token: 'write'
+    permissions:
+        contents: 'read'
+        id-token: 'write'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
