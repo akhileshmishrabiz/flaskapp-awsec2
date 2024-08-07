@@ -1,5 +1,4 @@
 name: Terraform Check and Checkov Scan
-
 on:
   pull_request:
     branches:
@@ -69,17 +68,16 @@ jobs:
           working-dir: .
           output-file: README.md
           output-method: inject
-          git-push: "true"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          git-push: "false"
 
       - name: Commit files
-      run: |
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git commit -m "Terraform docs update" -a
+        run: |
+          git config --local user.email "akhilesh.mishra@livingdevops.com"
+          git config --local user.name "akhilesh"
+          git commit -m "Terraform docs update" -a
 
       - name: Push changes
-        uses: ad-m/github-push-action
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GH_ACTIONS_PAT }}
           branch: ${{ github.ref }}
